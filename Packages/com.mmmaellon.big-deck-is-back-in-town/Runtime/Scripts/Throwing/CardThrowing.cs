@@ -22,15 +22,15 @@ namespace MMMaellon.BigDeckIsBackInTown
                     RequestSerialization();
                 }
 
-                if (value < 0 || !card.deck.throwing_handler || value >= card.deck.throwing_handler.targets.Length)
-                {
-                    target = null;
-                    return;
-                }
-                target = card.deck.throwing_handler.targets[value];
-                duration_cache = target.throw_duration;
-                power_cache = target.throw_duration;
-                card.deck.throwing_handler.OnThrowCard(value, this);
+                // if (value < 0 || !card.deck.throwing_handler || value >= card.deck.throwing_handler.targets.Length)
+                // {
+                //     target = null;
+                //     return;
+                // }
+                // target = card.deck.throwing_handler.targets[value];
+                // duration_cache = target.throw_duration;
+                // power_cache = target.throw_duration;
+                // card.deck.throwing_handler.OnThrowCard(value, this);
             }
         }
         [System.NonSerialized]
@@ -87,22 +87,22 @@ namespace MMMaellon.BigDeckIsBackInTown
                 {
                     if (target.persist_visibility_change)
                     {
-                        card.visible_only_to_owner = target.visible_only_to_owner;
+                        card.visible_to_owner = target.visible_only_to_owner;
                     }
                     else
                     {
-                        card.SetVisibility(true, !target.visible_only_to_owner);
+                        // card.SetVisibility(true, !target.visible_only_to_owner);
                     }
                 }
                 if (target.change_card_pickupable)
                 {
                     if (target.persist_pickupable_change)
                     {
-                        card.pickupable_only_by_owner = target.pickupable_only_by_owner;
+                        card.pickupable_by_owner = target.pickupable_only_by_owner;
                     }
                     else
                     {
-                        card.SetPickupable(true, !target.pickupable_only_by_owner);
+                        // card.SetPickupable(true, !target.pickupable_only_by_owner);
                     }
                 }
             }
@@ -114,14 +114,14 @@ namespace MMMaellon.BigDeckIsBackInTown
             sync.rigid.isKinematic = last_kinematic;
             if (target)
             {
-                if (target.change_card_visibility && !target.persist_visibility_change)
-                {
-                    card.SetVisibility(true, !card.visible_only_to_owner);
-                }
-                if (target.change_card_pickupable && !target.persist_pickupable_change)
-                {
-                    card.SetPickupable(true, !card.pickupable_only_by_owner);
-                }
+                // if (target.change_card_visibility && !target.persist_visibility_change)
+                // {
+                //     card.SetVisibility(true, !card.visible_to_owner);
+                // }
+                // if (target.change_card_pickupable && !target.persist_pickupable_change)
+                // {
+                //     card.SetPickupable(true, !card.pickupable_by_owner);
+                // }
             }
         }
 
@@ -277,43 +277,43 @@ namespace MMMaellon.BigDeckIsBackInTown
         {
             Debug.LogWarning("vel: " + CalcLinearRegressionOfVelocity());
 
-            if (!card.deck.throwing_handler || !card.deck.throwing_handler.allow_throwing || (!throw_primed && (card.deck.throwing_handler.prime_throw_on_pickup_use_down || card.deck.throwing_handler.first_throw_only)))
-            {
-                return;
-            }
+            // if (!card.deck.throwing_handler || !card.deck.throwing_handler.allow_throwing || (!throw_primed && (card.deck.throwing_handler.prime_throw_on_pickup_use_down || card.deck.throwing_handler.first_throw_only)))
+            // {
+            //     return;
+            // }
             throw_primed = false;
             SendCustomEventDelayedFrames(nameof(OnThrow), 2);
         }
         public override void OnPickupUseDown()
         {
-            if (!card.deck.throwing_handler || card.deck.throwing_handler.prime_throw_on_pickup_use_down)
-            {
-                return;
-            }
-            throw_primed = true;
+            // if (!card.deck.throwing_handler || card.deck.throwing_handler.prime_throw_on_pickup_use_down)
+            // {
+            //     return;
+            // }
+            // throw_primed = true;
         }
         VRCPlayerApi.TrackingData headData;
         public void OnThrow()
         {
-            if (!card.deck.throwing_handler && sync.state != LightSync.LightSync.STATE_PHYSICS || !sync.IsOwner())
-            {
-                return;
-            }
-            if (card.deck.throwing_handler.desktop_throw_assist && !sync.Owner.IsUserInVR() && (card.deck.throwing_handler.last_right_click < 0 || card.deck.throwing_handler.last_right_click + 4 > Time.frameCount))
-            {
-                headData = sync.Owner.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
-                sync.rigid.velocity = headData.rotation * Vector3.forward * card.deck.throwing_handler.desktop_throw_boost;
-                temp_target = card.deck.throwing_handler.LocateBestTarget(headData.position, sync.rigid.velocity);
-            }
-            else
-            {
-                sync.rigid.velocity = CalcLinearRegressionOfVelocity();
-                temp_target = card.deck.throwing_handler.LocateBestTarget(transform.position, sync.rigid.velocity);
-            }
-            if (temp_target)
-            {
-                temp_target.DealCard(this);
-            }
+            // if (!card.deck.throwing_handler && sync.state != LightSync.LightSync.STATE_PHYSICS || !sync.IsOwner())
+            // {
+            //     return;
+            // }
+            // if (card.deck.throwing_handler.desktop_throw_assist && !sync.Owner.IsUserInVR() && (card.deck.throwing_handler.last_right_click < 0 || card.deck.throwing_handler.last_right_click + 4 > Time.frameCount))
+            // {
+            //     headData = sync.Owner.GetTrackingData(VRCPlayerApi.TrackingDataType.Head);
+            //     sync.rigid.velocity = headData.rotation * Vector3.forward * card.deck.throwing_handler.desktop_throw_boost;
+            //     temp_target = card.deck.throwing_handler.LocateBestTarget(headData.position, sync.rigid.velocity);
+            // }
+            // else
+            // {
+            //     sync.rigid.velocity = CalcLinearRegressionOfVelocity();
+            //     temp_target = card.deck.throwing_handler.LocateBestTarget(transform.position, sync.rigid.velocity);
+            // }
+            // if (temp_target)
+            // {
+            //     temp_target.DealCard(this);
+            // }
         }
         [HideInInspector]
         public Card card;

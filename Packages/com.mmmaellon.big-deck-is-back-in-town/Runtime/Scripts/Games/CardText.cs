@@ -19,14 +19,14 @@ namespace MMMaellon.BigDeckIsBackInTown
         [System.NonSerialized, UdonSynced]
         public int owner_id = -1001;
 
-        public override void OnEnterState()
-        {
-            base.OnEnterState();
-            if (sync.IsOwner())
-            {
-                PickCardText();
-            }
-        }
+        // public override void OnEnterState()
+        // {
+        //     base.OnEnterState();
+        //     if (sync.IsOwner())
+        //     {
+        //         PickCardText();
+        //     }
+        // }
         public void PickCardText()
         {
             if (!bank)

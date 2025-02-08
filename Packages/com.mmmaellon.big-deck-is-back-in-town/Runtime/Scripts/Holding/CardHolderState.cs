@@ -76,8 +76,8 @@ namespace MMMaellon.BigDeckIsBackInTown
                 start_pos = transform.localPosition;
                 start_rot = transform.localRotation;
 
-                card.SetVisibility(true, !holder.visible_only_to_owner);
-                card.SetPickupable(true, !holder.pickupable_only_by_owner);
+                // card.SetVisibility(true, !holder.visible_only_to_owner);
+                // card.SetPickupable(true, !holder.pickupable_only_by_owner);
             }
         }
         public void Detach()
@@ -86,10 +86,10 @@ namespace MMMaellon.BigDeckIsBackInTown
             {
                 holder_id = -1001;
             }
-            transform.SetParent(card.deck.cards_outside_deck_parent);
-            sync.rigid.isKinematic = !card.card_physics;
-            card.SetVisibility(true, !card.visible_only_to_owner);
-            card.SetPickupable(true, !card.pickupable_only_by_owner);
+            // transform.SetParent(card.deck.cards_outside_deck_parent);
+            // sync.rigid.isKinematic = !card.card_physics;
+            // card.SetVisibility(true, !card.visible_to_owner);
+            // card.SetPickupable(true, !card.pickupable_by_owner);
         }
 
 #if !COMPILER_UDONSHARP && UNITY_EDITOR

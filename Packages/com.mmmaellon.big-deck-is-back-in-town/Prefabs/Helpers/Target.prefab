@@ -472,9 +472,11 @@ MonoBehaviour:
   target_center: {fileID: 5590543641986393554}
   card_limit: 0
   change_card_visibility: 0
-  visible_only_to_owners: 0
+  visible_only_to_owner: 0
+  persist_visibility_change: 1
   change_card_pickupable: 0
-  pickupable_only_by_owners: 0
+  pickupable_only_by_owner: 0
+  persist_pickupable_change: 1
   start_vel: {x: 0, y: 3, z: 0}
   end_vel: {x: 0, y: -3, z: 0}
   throw_duration: 0.25
@@ -483,6 +485,7 @@ MonoBehaviour:
   power_threshold: 0.25
   active_parameter: allow_throwing
   _allow_throwing: 1
+  _limit_reached: 0
   deal_delay: 0.2
   animator: {fileID: 0}
   nameplate: {fileID: 0}
@@ -667,6 +670,7 @@ MonoBehaviour:
   m_Script: {fileID: -1533785930, guid: 661092b4961be7145bfbe56e1e62337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AllowFocusView: 1
 --- !u!65 &1704163064364833224
 BoxCollider:
   m_ObjectHideFlags: 0

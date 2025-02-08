@@ -92,35 +92,35 @@ namespace MMMaellon.BigDeckIsBackInTown
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
         public virtual void OnValidate()
         {
-            if (!deck)
-            {
-                deck = GetComponentInChildren<Deck>();
-                if (deck)
-                {
-                    deck.throwing_handler = this;
-                }
-            }
-            if (targets.Length > 0)
-            {
-                HashSet<CardThrowTarget> only_valid = new();
-                for (int i = 0; i < targets.Length; i++)
-                {
-                    if (targets[i])
-                    {
-                        only_valid.Add(targets[i]);
-                    }
-                }
-                targets = only_valid.ToArray<CardThrowTarget>();
-            }
-            else
-            {
-                targets = GetComponentsInChildren<CardThrowTarget>();
-            }
-            for (int i = 0; i < targets.Length; i++)
-            {
-                targets[i].id = i;
-                targets[i].deck = deck;
-            }
+            // if (!deck)
+            // {
+            //     deck = GetComponentInChildren<Deck>();
+            //     if (deck)
+            //     {
+            //         deck.throwing_handler = this;
+            //     }
+            // }
+            // if (targets.Length > 0)
+            // {
+            //     HashSet<CardThrowTarget> only_valid = new();
+            //     for (int i = 0; i < targets.Length; i++)
+            //     {
+            //         if (targets[i])
+            //         {
+            //             only_valid.Add(targets[i]);
+            //         }
+            //     }
+            //     targets = only_valid.ToArray<CardThrowTarget>();
+            // }
+            // else
+            // {
+            //     targets = GetComponentsInChildren<CardThrowTarget>();
+            // }
+            // for (int i = 0; i < targets.Length; i++)
+            // {
+            //     targets[i].id = i;
+            //     targets[i].deck = deck;
+            // }
         }
 #endif
     }

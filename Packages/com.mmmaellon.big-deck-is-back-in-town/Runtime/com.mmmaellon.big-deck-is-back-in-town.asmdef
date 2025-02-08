@@ -10,7 +10,7 @@
         "Unity.TextMeshPro",
         "si.iwa.udontask",
         "VRC.Udon.Serialization.OdinSerializer",
-        "com.mmmaellon.smartobjectsync"
+        "com.mmmaellon.lightsync"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

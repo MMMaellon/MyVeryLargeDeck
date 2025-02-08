@@ -14,15 +14,18 @@
     },
     "com.mmmaellon.smartobjectsync": {
       "version": "3.10.12"
+    },
+    "com.mmmaellon.lightsync": {
+      "version": "1.1.16"
     }
   },
   "locked": {
     "com.vrchat.core.vpm-resolver": {
-      "version": "0.1.28",
+      "version": "0.1.29",
       "dependencies": {}
     },
     "dev.onevr.vrworldtoolkit": {
-      "version": "3.0.1",
+      "version": "3.2.0",
       "dependencies": {}
     },
     "si.iwa.udontask": {
@@ -32,19 +35,25 @@
       }
     },
     "com.vrchat.worlds": {
-      "version": "3.5.2",
+      "version": "3.7.5",
       "dependencies": {
-        "com.vrchat.base": "3.5.2"
+        "com.vrchat.base": "3.7.5"
       }
     },
     "com.vrchat.base": {
-      "version": "3.5.2",
+      "version": "3.7.5",
       "dependencies": {}
     },
     "com.mmmaellon.smartobjectsync": {
-      "version": "3.10.12",
+      "version": "3.10.15",
       "dependencies": {
         "com.vrchat.worlds": "^3.4.0"
+      }
+    },
+    "com.mmmaellon.lightsync": {
+      "version": "1.6.9-beta",
+      "dependencies": {
+        "com.vrchat.worlds": "^3.5.2"
       }
     }
   }

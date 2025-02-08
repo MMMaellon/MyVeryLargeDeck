@@ -7,121 +7,178 @@ using VRC.SDKBase;
 
 namespace MMMaellon.BigDeckIsBackInTown
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual), RequireComponent(typeof(LightSync.LightSync))]
-    public class Card : LightSyncState
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    public class Card : ObjectPoolObject
     {
-        [UdonSynced, FieldChangeCallback(nameof(visible_only_to_owner))]
-        public bool _visible_only_to_owner = false;
-        public bool visible_only_to_owner
+        [UdonSynced, FieldChangeCallback(nameof(visible_to_owner))]
+        public bool _visible_to_owner = false;
+        public bool visible_to_owner
         {
-            get => _visible_only_to_owner;
+            get => _visible_to_owner;
             set
             {
-                _visible_only_to_owner = value;
-                SetVisibility(!IsActiveState(), !IsActiveState() && !value);
+                _visible_to_owner = value;
+                // SetVisibility();
                 if (sync.IsOwner())
                 {
                     RequestSerialization();
                 }
             }
         }
-        [UdonSynced, FieldChangeCallback(nameof(pickupable_only_by_owner))]
-        public bool _pickupable_only_by_owner = false;
-        public bool pickupable_only_by_owner
+        [UdonSynced, FieldChangeCallback(nameof(visible_to_others))]
+        public bool _visible_to_others = false;
+        public bool visible_to_others
         {
-            get => _pickupable_only_by_owner;
+            get => _visible_to_others;
             set
             {
-                _pickupable_only_by_owner = value;
-                SetPickupable(true, IsActiveState() || !value);
+                _visible_to_others = value;
+                // SetVisibility();
                 if (sync.IsOwner())
                 {
                     RequestSerialization();
                 }
             }
         }
-        public int id;
+        [UdonSynced, FieldChangeCallback(nameof(pickupable_by_owner))]
+        public bool _pickupable_by_owner = false;
+        public bool pickupable_by_owner
+        {
+            get => _pickupable_by_owner;
+            set
+            {
+                _pickupable_by_owner = value;
+                // SetPickupable();
+                if (sync.IsOwner())
+                {
+                    RequestSerialization();
+                }
+            }
+        }
+        [UdonSynced, FieldChangeCallback(nameof(pickupable_by_others))]
+        public bool _pickupable_by_others = false;
+        public bool pickupable_by_others
+        {
+            get => _pickupable_by_others;
+            set
+            {
+                _pickupable_by_others = value;
+                // SetPickupable();
+                if (sync.IsOwner())
+                {
+                    RequestSerialization();
+                }
+            }
+        }
         public bool card_physics = true;
         public Renderer render_component;
         public GameObject child;
         public CardThrowing throwing;
         public Collider collider_component;
 
+        [HideInInspector]
         public Deck deck;
 
-        public override void OnEnterState()
+        public override void OnSpawnPoolObject()
         {
-            collider_component.enabled = deck.next_card == id;
-            collider_component.isTrigger = true;
-            render_component.enabled = false;
-            SetVisibility(false, false);
-            SetPickupable(true, true);
-            transform.position = deck.cards_in_deck_parent.position;
-            transform.rotation = deck.cards_in_deck_parent.rotation;
-            sync.rigid.isKinematic = true;
-            if (deck.reparent_cards)
+            base.OnSpawnPoolObject();
+            if (deck.next_card == id)
             {
-                transform.SetParent(deck.cards_in_deck_parent, true);
+                render_component.enabled = true;
+                SetPickupability(sync.IsOwner());
             }
         }
 
-        public override void OnExitState()
+        public override void OnDespawnPoolObject()
         {
-            collider_component.enabled = true;
-            collider_component.isTrigger = false;
-            render_component.enabled = true;
-            SetVisibility(true, !visible_only_to_owner);
-            SetPickupable(true, !pickupable_only_by_owner);
-            sync.rigid.isKinematic = sync.kinematicFlag;
-            if (deck.reparent_cards)
+            base.OnDespawnPoolObject();
+            if (deck.next_card == id)
             {
-                transform.SetParent(deck.cards_outside_deck_parent, true);
+                render_component.enabled = false;
+                gameObject.SetActive(true);
+                SetPickupability(Networking.IsOwner(pool.gameObject));
             }
         }
 
-        public override bool OnLerp(float elapsedTime, float autoSmoothedLerp)
-        {
-            return false;
-        }
+        [SerializeField]
+        Material startingMaterial;
 
-        public void SetVisibility(bool visible_to_self, bool visible_to_others)
+        public void SetMaterial(bool owner)
         {
-            if ((visible_to_self && sync.IsOwner()) || (visible_to_others && !sync.IsOwner()))
+            if (owner)
+            {
+                child.SetActive(visible_to_owner);
+                if (visible_to_owner)
+                {
+                    if (deck.card_material)
+                    {
+                        render_component.material = deck.card_material;
+                    }
+                    else
+                    {
+                        render_component.material = startingMaterial;
+                    }
+                }
+                else if (deck.hidden_card_material)
+                {
+                    render_component.material = deck.hidden_card_material;
+                }
+                else
+                {
+                    render_component.material = startingMaterial;
+                }
+            }
+            else if (visible_to_others)
             {
                 if (deck.card_material)
                 {
-                    render_component.sharedMaterial = deck.card_material;
+                    render_component.material = deck.card_material;
                 }
-                if (child)
+                else
                 {
-                    child.SetActive(true);
+                    render_component.material = startingMaterial;
                 }
+            }
+            else if (deck.hidden_card_material)
+            {
+                render_component.material = deck.hidden_card_material;
             }
             else
             {
-                if (deck.hidden_card_material)
-                {
-                    render_component.sharedMaterial = deck.hidden_card_material;
-                }
-                if (child)
-                {
-                    child.SetActive(false);
-                }
+                render_component.material = startingMaterial;
             }
         }
 
-        public void SetPickupable(bool pickupable_by_owner, bool pickupable_by_others)
+        public void SetPickupability(bool owner)
         {
-            sync.pickup.pickupable = (pickupable_by_owner && sync.IsOwner()) || (pickupable_by_others && !sync.IsOwner());
+            if (owner)
+            {
+                if (pickupable_by_owner)
+                {
+                    collider_component.enabled = true;
+                    sync.pickup.pickupable = true;
+                }
+                else
+                {
+                    collider_component.enabled = false;
+                    sync.pickup.pickupable = false;
+                }
+            }
+            else if (pickupable_by_others)
+            {
+                collider_component.enabled = true;
+                sync.pickup.pickupable = true;
+            }
+            else
+            {
+                collider_component.enabled = false;
+                sync.pickup.pickupable = false;
+            }
         }
 
         public override void OnOwnershipTransferred(VRCPlayerApi player)
         {
-            if (IsActiveState())
-            {
-                SetVisibility(!IsActiveState(), !IsActiveState() && !visible_only_to_owner);
-                SetPickupable(true, IsActiveState() || !pickupable_only_by_owner);
-            }
+
         }
 
 #if !COMPILER_UDONSHARP && UNITY_EDITOR
@@ -138,6 +195,10 @@ namespace MMMaellon.BigDeckIsBackInTown
             if (!throwing)
             {
                 throwing = GetComponent<CardThrowing>();
+            }
+            if (render_component)
+            {
+                startingMaterial = render_component.material;
             }
             PrefabUtility.RecordPrefabInstancePropertyModifications(this);
         }
