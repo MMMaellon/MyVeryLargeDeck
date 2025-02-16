@@ -13,7 +13,8 @@
   "vpmDependencies": {
     "com.vrchat.worlds": "^3.5.1",
     "com.mmmaellon.smartobjectsync": "^3.10.9",
-        "si.iwa.udontask": "^1.1.1"
+    "com.mmmaellon.lightsync": "^1.6.9",
+    "com.mmmaellon.group-theory": "^1.1.7"
   },
   "samples": [
     {
